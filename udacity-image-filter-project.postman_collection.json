@@ -86,7 +86,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{host}}/api/v0/filteredImage?image_url=https://i.picsum.photos/id/866/200/300.jpg",
+					"raw": "{{host}}/api/v0/filteredImage?image_url=",
 					"host": [
 						"{{host}}"
 					],
@@ -98,7 +98,7 @@
 					"query": [
 						{
 							"key": "image_url",
-							"value": "https://i.picsum.photos/id/866/200/300.jpg"
+							"value": ""
 						}
 					]
 				},
@@ -131,7 +131,7 @@
 	],
 	"variable": [
 		{
-			"id": "4f119a67-15ee-41b6-97c6-17c35b08f606",
+			"id": "e9ef6022-e488-415b-b9cc-edf6bb33a7de",
 			"key": "host",
 			"value": "http://localhost:8082",
 			"type": "string"
