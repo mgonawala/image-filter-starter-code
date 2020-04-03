@@ -26,23 +26,28 @@ const router:Router = Router();
 router.get('/filteredImage', async (req: Request, res: Response) => {
 
     const {image_url} = req.query;
-    
+
     // Validate image url
     if( image_url === undefined || image_url === ''  || !validator.isURL(image_url)){
-        res.status(409).send({message: 'Please provide valid Image URL.'});
+        res.status(400).send({message: 'Please provide valid Image URL.'});
     }
     
+    try{
     const filteredImage = await Util.filterImageFromURL(image_url);
-
-    // Send filteredImage back to user and delete the file on completion.
-    res.status(200).sendFile(filteredImage, err => {
-        if(err){
-            console.log({message: err.message});
-        }
-        else{
-            Util.deleteLocalFiles([filteredImage]);
-        }
-    } );
+        // Send filteredImage back to user and delete the file on completion.
+        res.status(200).sendFile(filteredImage, err => {
+            if(err){
+                console.log({message: err.message});
+            }
+            else{
+                Util.deleteLocalFiles([filteredImage]);
+            }
+        } );
+    }
+    catch(error){
+        res.status(400).send({message: 'Please provide valid Image URL.'})
+    }
+   
 });
 
 export const IndexRouter:Router = router;
