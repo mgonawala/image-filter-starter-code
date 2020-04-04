@@ -113,20 +113,18 @@ router.post('/', async (req: Request, res: Response) => {
 
     const newUser = await new User({
         email: email,
-        password_hash: password_hash
+        password_hash: password_hash,
     });
-
+    const jwt = generateJWT(newUser);
+   
     let savedUser;
     try {
         savedUser = await newUser.save();
     } catch (e) {
         throw e;
     }
-
     // Generate JWT
-    console.log(savedUser + " saved user");
-    const jwt = generateJWT(savedUser as User);
-
+    console.log(" saved user");
     res.status(201).send({token: jwt, user: savedUser.short()});
 });
 

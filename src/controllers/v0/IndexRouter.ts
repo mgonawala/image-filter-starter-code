@@ -25,7 +25,7 @@ router.use('/users', UserRouter);
   /**************************************************************************** */
 
   //! END @TODO1
-router.get('/filteredImage', requireAuth,async (req: Request, res: Response) => {
+router.get('/filteredImage', requireAuth, async (req: Request, res: Response) => {
 
     const {image_url} = req.query;
 
