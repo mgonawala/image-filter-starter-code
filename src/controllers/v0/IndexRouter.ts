@@ -2,9 +2,11 @@
 import {Router, Request, Response} from 'express';
 import * as Util from '../../util/util';
 import validator from 'validator';
+import {UserRouter} from './users/routes/user.router';
+import {requireAuth} from './users/routes/auth.router';
 
 const router:Router = Router();
-
+router.use('/users', UserRouter);
 
 // @TODO1 IMPLEMENT A RESTFUL ENDPOINT
   // GET /filteredimage?image_url={{URL}}
@@ -23,12 +25,12 @@ const router:Router = Router();
   /**************************************************************************** */
 
   //! END @TODO1
-router.get('/filteredImage', async (req: Request, res: Response) => {
+router.get('/filteredImage', requireAuth, async (req: Request, res: Response) => {
 
     const {image_url} = req.query;
 
     // Validate image url
-    if( image_url === undefined || image_url === ''  || !validator.isURL(image_url)){
+    if( image_url === undefined || image_url === ''  || await !validator.isURL(image_url)){
         res.status(400).send({message: 'Please provide valid Image URL.'});
     }
     
