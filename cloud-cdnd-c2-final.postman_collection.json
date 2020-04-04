@@ -6,6 +6,205 @@
 	},
 	"item": [
 		{
+			"name": "POST /auth valid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c765585d-015b-437e-8e7a-5818293275a3",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\":\"app@gmail.com\",\n\t\"password\":\"password\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v0/users/auth",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v0",
+						"users",
+						"auth"
+					]
+				},
+				"description": "Registers a new user and obtain API Key"
+			},
+			"response": []
+		},
+		{
+			"name": "POST /auth invalid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3729372d-7800-4c90-85f2-a9a0c24580a3",
+						"exec": [
+							"pm.test(\"Status code is 422\", function () {",
+							"    pm.response.to.have.status(422);",
+							"});",
+							"",
+							"pm.test(\"Should send response message User may already exist\", function () {",
+							"    const body = pm.response.json();",
+							"    pm.expect(body).to.have.property(\"message\",\"User may already exist\");",
+							"   ",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\":\"app@gmail.com\",\n\t\"password\":\"KuchBhiInvalid\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v0/users/auth",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v0",
+						"users",
+						"auth"
+					]
+				},
+				"description": "Registers a new user and obtain API Key"
+			},
+			"response": []
+		},
+		{
+			"name": "POST /auth/login Invalid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a4673161-a972-419f-bdbf-42d6fb2a65c4",
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Should send response message Unauthorized\", function () {",
+							"    const body = pm.response.json();",
+							"    pm.expect(body).to.have.property(\"message\",\"Unauthorized\");",
+							"   ",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\":\"app@gmail.com\",\n\t\"password\":\"invalid\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v0/users/auth/login",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v0",
+						"users",
+						"auth",
+						"login"
+					]
+				},
+				"description": "Logs in given user and obtains JWT token"
+			},
+			"response": []
+		},
+		{
+			"name": "POST /auth/login Valid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b0ac5855-a4e0-47ed-bd76-85c382135234",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"body includes an email and token\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.auth).to.eql(true);",
+							"    pm.expect(jsonData.user).to.not.eql(null);",
+							"    pm.expect(jsonData.token).to.not.eql(null)",
+							"    pm.environment.set(\"token\", jsonData.token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\":\"app@gmail.com\",\n\t\"password\":\"password\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v0/users/auth/login",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v0",
+						"users",
+						"auth",
+						"login"
+					]
+				},
+				"description": "Logs in given user and obtains JWT token"
+			},
+			"response": []
+		},
+		{
 			"name": "/GET filterImage",
 			"event": [
 				{
@@ -26,6 +225,67 @@
 							"   ",
 							"});",
 							"pm.test(\"Response time is less than 500ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/v0/filteredImage?image_url=https://i.picsum.photos/id/818/200/300.jpg",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v0",
+						"filteredImage"
+					],
+					"query": [
+						{
+							"key": "image_url",
+							"value": "https://i.picsum.photos/id/818/200/300.jpg"
+						}
+					]
+				},
+				"description": "GET operation to filter image from given URL"
+			},
+			"response": []
+		},
+		{
+			"name": "/GET filterImage Invalid Authentication",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "937ae94e-758e-4997-a1e9-5eb9b227a474",
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Should have content type value image/jpg\", function () {",
+							"    const body = pm.response.json();",
+							"    pm.expect(body).to.have.property(\"message\",\"Failed to authenticate.\");",
+							"   ",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 500ms\", function () {",
 							"    pm.expect(pm.response.responseTime).to.be.below(500);",
 							"});"
 						],
@@ -34,6 +294,16 @@
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhlbGxvQGdtYWlsLmNvbSIsInBhc3N3b3JkX2hhc2giOiIkMmIkMTAkcnEzL0JONmZLaHJYZGlnQmEzU1N2LnhqUFFpWXJik8iOiIyMDIwLTA0LTAzVDExOjE2OjEwLjU4M1oiLCJpYXQiOjE1ODU5MTI1NzF9.Uihh_z-Wrvw_3cpRSj87z8ShjzCyfTQrfpwjEB4Qf8c",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [],
 				"url": {
@@ -69,13 +339,11 @@
 							"    pm.response.to.have.status(400);",
 							"});",
 							"",
-							"pm.test(\"Should have content type value image/jpg\", function () {",
+							"",
+							"pm.test(\"Should send response message Please provide valid Image URL.\", function () {",
 							"    const body = pm.response.json();",
 							"    pm.expect(body).to.have.property(\"message\",\"Please provide valid Image URL.\");",
 							"   ",
-							"});",
-							"pm.test(\"Response time is less than 500ms\", function () {",
-							"    pm.expect(pm.response.responseTime).to.be.below(500);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -83,10 +351,20 @@
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{host}}/api/v0/filteredImage?image_url=https://i.picsum.photos/id/866/200/300.jpg",
+					"raw": "{{host}}/api/v0/filteredImage?image_url=invalid",
 					"host": [
 						"{{host}}"
 					],
@@ -98,7 +376,56 @@
 					"query": [
 						{
 							"key": "image_url",
-							"value": "https://i.picsum.photos/id/866/200/300.jpg"
+							"value": "invalid"
+						}
+					]
+				},
+				"description": "GET operation to filter image from given URL"
+			},
+			"response": []
+		},
+		{
+			"name": "/GET filterImage Invalid Authentication",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "937ae94e-758e-4997-a1e9-5eb9b227a474",
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							"",
+							"pm.test(\"Should send response message No Authoriztion headers.\", function () {",
+							"    const body = pm.response.json();",
+							"    pm.expect(body).to.have.property(\"message\",\"No authorization headers.\");",
+							"   ",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/v0/filteredImage?image_url=invalid",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v0",
+						"filteredImage"
+					],
+					"query": [
+						{
+							"key": "image_url",
+							"value": "invalid"
 						}
 					]
 				},
@@ -131,9 +458,15 @@
 	],
 	"variable": [
 		{
-			"id": "4f119a67-15ee-41b6-97c6-17c35b08f606",
+			"id": "a57d733f-f9d7-4cb0-94c6-acee0ab29f2a",
 			"key": "host",
-			"value": "http://localhost:8082",
+			"value": "http://udacity-image-filter-dev.us-east-1.elasticbeanstalk.com",
+			"type": "string"
+		},
+		{
+			"id": "ec3429ce-495d-49d2-9866-0bd75319afc7",
+			"key": "token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFwcEBnbWFpbC5jb20iLCJpYXQiOjE1ODU5OTUzMjV9.EeTdtP7vDqPWqlzcgceyBNBapxDXqQ14C8HrYXWjFMw",
 			"type": "string"
 		}
 	],

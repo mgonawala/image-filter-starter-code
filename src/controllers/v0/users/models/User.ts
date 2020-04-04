@@ -11,9 +11,6 @@ export class User extends Model<User> {
   public password_hash!: string; // for nullable fields
 
   @Column
-  public api_key!: string // API keys 
-
-  @Column
   @CreatedAt
   public createdAt: Date = new Date();
 
